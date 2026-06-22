@@ -1,8 +1,26 @@
 "use client";
 
+import { useEffect } from "react";
+
 export default function Hero() {
+  useEffect(() => {
+    const heroSection = document.querySelector(".hero-section");
+    if (!heroSection) return;
+
+    const handleScroll = () => {
+      if (window.scrollY > window.innerHeight * 0.3) {
+        heroSection.classList.add("scrolled-past");
+      } else {
+        heroSection.classList.remove("scrolled-past");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <section className="hero-sticky-wrapper" aria-label="Hero">
+    <section className="hero-section" aria-label="Hero">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1600&h=900&fit=crop"
