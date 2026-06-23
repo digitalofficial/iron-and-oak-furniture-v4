@@ -9,11 +9,6 @@ export default function Materials() {
   const wordsRef = useRef<(HTMLSpanElement | null)[]>([]);
 
   useEffect(() => {
-    const supportsTimeline =
-      CSS.supports && CSS.supports("animation-timeline: view()");
-    if (supportsTimeline) return;
-
-    // IO fallback: reveal words sequentially on scroll
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

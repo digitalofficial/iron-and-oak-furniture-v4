@@ -6,15 +6,11 @@ export default function Testimonial() {
   const innerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const supportsTimeline =
-      CSS.supports && CSS.supports("animation-timeline: view()");
-    if (supportsTimeline) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("io-visible");
+            entry.target.classList.add("revealed");
           }
         });
       },
@@ -22,7 +18,6 @@ export default function Testimonial() {
     );
 
     if (innerRef.current) {
-      innerRef.current.classList.add("io-animate");
       observer.observe(innerRef.current);
     }
 

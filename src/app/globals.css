@@ -450,17 +450,6 @@ body {
   transform: translateY(0);
 }
 
-/* Scroll-driven clip-path reveal */
-@supports (animation-timeline: view()) {
-  .process-step {
-    opacity: 1;
-    transform: none;
-    animation: clip-reveal linear both;
-    animation-timeline: view();
-    animation-range: entry 0% entry 40%;
-  }
-}
-
 @keyframes clip-reveal {
   from {
     opacity: 0;
@@ -558,25 +547,17 @@ body {
 .material-word {
   display: inline-block;
   opacity: 0.15;
-  transition: opacity 0.6s var(--ease-smooth), color 0.6s var(--ease-smooth);
+  transition: opacity 0.6s var(--ease-smooth), color 0.6s var(--ease-smooth), filter 0.6s var(--ease-smooth);
   margin-right: 0.3em;
 }
 
 .material-word.active {
   opacity: 1;
+  filter: blur(0);
 }
 
 .material-word.highlight {
   color: var(--color-primary);
-}
-
-/* Scroll-driven word reveal */
-@supports (animation-timeline: view()) {
-  .material-word {
-    animation: word-reveal linear both;
-    animation-timeline: view();
-    animation-range: entry 0% cover 30%;
-  }
 }
 
 @keyframes word-reveal {
@@ -617,25 +598,15 @@ body {
   position: relative;
 }
 
-@supports (animation-timeline: view()) {
-  .testimonial-inner {
-    animation: testimonial-reveal linear both;
-    animation-timeline: view();
-    animation-range: entry 0% entry 50%;
-  }
+.testimonial-inner {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s var(--ease-smooth);
 }
 
-@keyframes testimonial-reveal {
-  from {
-    opacity: 0;
-    clip-path: inset(0 0 100% 0);
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    clip-path: inset(0 0 0% 0);
-    transform: translateY(0);
-  }
+.testimonial-inner.revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .testimonial-quote {

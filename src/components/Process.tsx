@@ -39,11 +39,6 @@ export default function Process() {
   const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    // IO fallback for browsers without animation-timeline
-    const supportsTimeline =
-      CSS.supports && CSS.supports("animation-timeline: view()");
-    if (supportsTimeline) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
