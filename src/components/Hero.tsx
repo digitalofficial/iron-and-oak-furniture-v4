@@ -1,20 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export default function Hero() {
+  const { scrollY } = useScroll();
+  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const scale = useTransform(scrollY, [0, 400], [1, 0.95]);
+  const blur = useTransform(scrollY, [0, 400], [0, 8]);
+  const y = useTransform(scrollY, [0, 400], [0, 50]);
+
   useEffect(() => {
     const heroSection = document.querySelector(".hero-section");
     if (!heroSection) return;
-
     const handleScroll = () => {
-      if (window.scrollY > window.innerHeight * 0.3) {
-        heroSection.classList.add("scrolled-past");
-      } else {
-        heroSection.classList.remove("scrolled-past");
-      }
+      heroSection.classList.toggle("scrolled-past", window.scrollY > window.innerHeight * 0.3);
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -30,18 +31,42 @@ export default function Hero() {
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#0C0A08]/80 via-[#0C0A08]/60 to-[#0C0A08]/90" />
 
-      <div className="hero-content relative z-10">
+      <motion.div
+        className="hero-content relative z-10"
+        style={{ opacity, scale, y, filter: blur.get() > 0 ? `blur(${blur.get()}px)` : undefined }}
+      >
         <div className="hero-glow" aria-hidden="true" />
-        <h1 className="hero-title">
+
+        <motion.h1
+          className="hero-title"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        >
           <span>Handcrafted</span> for generations.
-        </h1>
-        <p className="hero-subtitle">
+        </motion.h1>
+
+        <motion.p
+          className="hero-subtitle"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        >
           Custom furniture & woodwork &mdash; Tucson, Arizona
-        </p>
-        <a href="#commission" className="cta-button">
+        </motion.p>
+
+        <motion.a
+          href="#commission"
+          className="cta-button"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          whileHover={{ scale: 1.05, y: -2 }}
+          whileTap={{ scale: 0.98 }}
+        >
           <span>Commission a piece</span>
-        </a>
-      </div>
+        </motion.a>
+      </motion.div>
     </section>
   );
 }

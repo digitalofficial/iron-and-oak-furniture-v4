@@ -1,74 +1,45 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 
-const materialsText = "We work with White Oak, Walnut, Reclaimed Barn Wood, Raw Steel, Copper, and Live Edge Slabs";
-const highlightWords = ["White Oak", "Walnut", "Reclaimed Barn Wood", "Raw Steel", "Copper", "Live Edge Slabs"];
+const text = "We work with White Oak, Walnut, Reclaimed Barn Wood, Raw Steel, Copper, and Live Edge Slabs";
+const highlightWords = ["White", "Oak,", "Walnut,", "Reclaimed", "Barn", "Wood,", "Raw", "Steel,", "Copper,", "Live", "Edge", "Slabs"];
 
 export default function Materials() {
-  const wordsRef = useRef<(HTMLSpanElement | null)[]>([]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("active");
-          }
-        });
-      },
-      { threshold: 0.5, rootMargin: "0px 0px -20% 0px" }
-    );
-
-    wordsRef.current.forEach((el) => {
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const words = materialsText.split(" ");
-
-  // Track multi-word highlights
-  const getHighlightClass = (wordIndex: number): boolean => {
-    let currentIdx = 0;
-    for (const word of words) {
-      if (currentIdx === wordIndex) {
-        // Check if this word starts a highlight phrase
-        for (const phrase of highlightWords) {
-          const phraseWords = phrase.split(" ");
-          const slice = words.slice(wordIndex, wordIndex + phraseWords.length).join(" ");
-          if (slice === phrase) return true;
-        }
-        // Check if this word is part of an earlier multi-word phrase
-        for (const phrase of highlightWords) {
-          const phraseWords = phrase.split(" ");
-          for (let start = Math.max(0, wordIndex - phraseWords.length + 1); start < wordIndex; start++) {
-            const slice = words.slice(start, start + phraseWords.length).join(" ");
-            if (slice === phrase && wordIndex < start + phraseWords.length) return true;
-          }
-        }
-      }
-      currentIdx++;
-    }
-    return false;
-  };
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const words = text.split(" ");
 
   return (
-    <section id="materials" className="materials-section" aria-label="Materials">
-      <span className="materials-label">Sourced with intention</span>
+    <section id="materials" className="materials-section" aria-label="Materials" ref={ref}>
+      <motion.span
+        className="materials-label"
+        initial={{ opacity: 0, y: 20 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6 }}
+      >
+        Sourced with intention
+      </motion.span>
       <p className="materials-text">
-        {words.map((word, i) => (
-          <span
-            key={i}
-            ref={(el) => {
-              wordsRef.current[i] = el;
-            }}
-            className={`material-word${getHighlightClass(i) ? " highlight" : ""}`}
-          >
-            {word}
-          </span>
-        ))}
+        {words.map((word, i) => {
+          const isHighlight = highlightWords.includes(word);
+          return (
+            <motion.span
+              key={i}
+              style={{ display: 'inline-block', marginRight: '0.3em', color: isHighlight ? 'var(--color-primary)' : undefined }}
+              initial={{ opacity: 0.1, filter: "blur(4px)" }}
+              animate={inView ? { opacity: 1, filter: "blur(0px)" } : {}}
+              transition={{
+                duration: 0.5,
+                delay: 0.06 * i,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+            >
+              {word}
+            </motion.span>
+          );
+        })}
       </p>
     </section>
   );
