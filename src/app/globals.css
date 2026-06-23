@@ -224,18 +224,12 @@ body {
    ============================================================ */
 .portfolio-outer {
   position: relative;
-  height: 400vh;
+  background: var(--color-base);
+  padding: clamp(4rem, 10vw, 8rem) 0;
 }
 
 .portfolio-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: var(--color-base);
 }
 
 .portfolio-header {
@@ -258,24 +252,18 @@ body {
   display: flex;
   gap: 2rem;
   padding: 0 clamp(2rem, 5vw, 6rem);
-  will-change: transform;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  padding-bottom: 1rem;
 }
 
-@supports (animation-timeline: scroll()) {
-  .portfolio-track {
-    animation: scroll-horizontal linear both;
-    animation-timeline: scroll(nearest block);
-  }
-}
+.portfolio-track:active { cursor: grabbing; }
 
-@keyframes scroll-horizontal {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(calc(-100% + 100vw - 8rem));
-  }
-}
+.portfolio-track::-webkit-scrollbar { height: 3px; }
+.portfolio-track::-webkit-scrollbar-track { background: var(--color-surface); }
+.portfolio-track::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 3px; }
 
 /* --- Holo Card with Mouse Tracking --- */
 .portfolio-card {
@@ -901,25 +889,17 @@ body {
 }
 
 /* ============================================================
-   SCALE-IN ANIMATION (view-driven)
+   SCALE-IN ANIMATION (IO-driven)
    ============================================================ */
-@supports (animation-timeline: view()) {
-  .scale-in-view {
-    animation: scale-in-scroll linear both;
-    animation-timeline: view();
-    animation-range: entry 0% entry 40%;
-  }
+.scale-in-view {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.8s var(--ease-smooth), transform 0.8s var(--ease-smooth);
 }
 
-@keyframes scale-in-scroll {
-  from {
-    opacity: 0;
-    transform: scale(0.85);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.scale-in-view.revealed {
+  opacity: 1;
+  transform: scale(1);
 }
 
 /* ============================================================
@@ -936,13 +916,7 @@ body {
   transform: translateY(0);
 }
 
-@supports (animation-timeline: view()) {
-  .io-animate {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
+/* IO fallback is now the primary animation method — no @supports overrides */
 
 /* ============================================================
    REDUCED MOTION

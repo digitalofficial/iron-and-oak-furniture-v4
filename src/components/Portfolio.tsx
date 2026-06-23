@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState } from "react";
 
 const pieces = [
   {
@@ -70,6 +70,7 @@ const pieces = [
 
 export default function Portfolio() {
   const trackRef = useRef<HTMLDivElement>(null);
+  const dragState = useRef({ isDragging: false, startX: 0, scrollLeft: 0 });
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const card = e.currentTarget;
@@ -80,6 +81,17 @@ export default function Portfolio() {
     card.style.setProperty("--mouse-y", `${y}%`);
   }, []);
 
+  const onTrackMouseDown = useCallback((e: React.MouseEvent) => {
+    if (!trackRef.current) return;
+    dragState.current = { isDragging: true, startX: e.pageX, scrollLeft: trackRef.current.scrollLeft };
+  }, []);
+  const onTrackMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!dragState.current.isDragging || !trackRef.current) return;
+    e.preventDefault();
+    trackRef.current.scrollLeft = dragState.current.scrollLeft - (e.pageX - dragState.current.startX) * 1.2;
+  }, []);
+  const onTrackMouseUp = useCallback(() => { dragState.current.isDragging = false; }, []);
+
   return (
     <section id="portfolio" className="portfolio-outer" aria-label="Portfolio">
       <div className="portfolio-sticky">
@@ -87,8 +99,9 @@ export default function Portfolio() {
           <h2>
             Selected <span>Works</span>
           </h2>
+          <p style={{ color: 'var(--color-muted)', fontSize: '0.85rem', marginTop: '0.5rem', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Drag to explore</p>
         </div>
-        <div className="portfolio-track" ref={trackRef}>
+        <div className="portfolio-track" ref={trackRef} onMouseDown={onTrackMouseDown} onMouseMove={onTrackMouseMove} onMouseUp={onTrackMouseUp} onMouseLeave={onTrackMouseUp}>
           {pieces.map((piece, i) => (
             <article
               key={i}
@@ -111,3 +124,6 @@ export default function Portfolio() {
     </section>
   );
 }
+
+// Removed: portfolio-sticky wrapper was causing 400vh height + broken scroll-timeline.
+// Now uses simple horizontal scroll with drag-to-scroll.
