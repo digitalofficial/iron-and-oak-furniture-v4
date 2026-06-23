@@ -29,7 +29,7 @@ export default function Hero() {
         className="absolute inset-0 w-full h-full object-cover"
         fetchPriority="high"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0C0A08]/80 via-[#0C0A08]/60 to-[#0C0A08]/90" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0C0A08]/55 via-[#0C0A08]/35 to-[#0C0A08]/70" />
 
       <motion.div
         className="hero-content relative z-10"
@@ -38,7 +38,8 @@ export default function Hero() {
         <div className="hero-glow" aria-hidden="true" />
 
         <motion.h1
-          className="hero-title"
+          className="hero-title drop-shadow-lg"
+          style={{ textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
